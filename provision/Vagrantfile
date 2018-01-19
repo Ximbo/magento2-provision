@@ -1,0 +1,67 @@
+# encoding: utf-8
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.require_version ">= 1.5"
+
+require 'yaml'
+
+current_dir    = File.dirname(File.expand_path(__FILE__))
+configs        = YAML.load_file("#{current_dir}/Vagrant.yml")
+vagrant_config = configs
+
+# Check to determine whether we're on a windows or linux/os-x host,
+# later on we use this to launch ansible in the supported way
+# source: https://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
+def which(cmd)
+    exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+    ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+        exts.each { |ext|
+            exe = File.join(path, "#{cmd}#{ext}")
+            return exe if File.executable? exe
+        }
+    end
+    return nil
+end
+
+Vagrant.configure("2") do |config|
+
+    # Configure The Box
+    config.vm.box = "ubuntu/xenial64"
+    
+    config.vm.provider :virtualbox do |v|
+        v.name = vagrant_config['host']
+        v.customize [
+            "modifyvm", :id,
+            "--name", vagrant_config['host'],
+            "--memory", vagrant_config['memory'],
+            "--natdnshostresolver1", "on",
+            "--cpus", vagrant_config['cpus'],
+        ]
+    end
+
+    # Configure Port Forwarding
+    config.vm.network 'forwarded_port', guest: 80, host: 8000
+    config.vm.network 'forwarded_port', guest: 3306, host: 33060
+    config.vm.network 'forwarded_port', guest: 5432, host: 54320
+    config.vm.network 'forwarded_port', guest: 35729, host: 35729
+
+    config.vm.network :private_network, ip: vagrant_config['ip']
+    config.ssh.forward_agent = true
+
+    # If ansible is in your path it will provision from your HOST machine
+    # If ansible is not found in the path it will be instaled in the VM and provisioned from there
+    if which('ansible-playbook')
+        config.vm.provision "ansible" do |ansible|
+            ansible.playbook = "ansible/playbook-dev.yml"
+            ansible.inventory_path = "ansible/inventories/dev"
+            ansible.limit = 'all'
+            ansible.extra_vars = {vagrant: vagrant_config}
+        end
+    else
+        config.vm.provision :shell, path: "ansible/windows.sh", args: [vagrant_config['host']]
+    end
+
+    config.vm.synced_folder ".", "/vagrant", disabled: true
+    # config.vm.synced_folder "../", "/var/www/vagrant/data", type: vagrant_config['synced_type'], mount_options: ['actimeo=1','nolock', 'vers=3', 'udp', 'noatime']
+end

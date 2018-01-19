@@ -1,0 +1,9 @@
+---
+- name: Install Beanstalkd
+  apt: pkg=beanstalkd state=latest
+
+- name: Configure Beanstalkd
+  shell: sed -i "s/#START=yes/START=yes/" /etc/default/beanstalkd
+
+- name: Starting Beanstalkd
+  shell: /etc/init.d/beanstalkd start

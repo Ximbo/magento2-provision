@@ -1,0 +1,9 @@
+---
+server_dev: false
+server_user: user
+server_name: example.com
+server_home: "/var/www/user"
+mysql_root_password: root
+mysql_user: magento
+mysql_password: magento
+php_xdebug: "0"

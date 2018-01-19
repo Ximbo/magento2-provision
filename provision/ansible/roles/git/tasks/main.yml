@@ -1,0 +1,9 @@
+---
+- name: Add ppa Repository
+  apt_repository: repo=ppa:git-core/ppa
+
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Install Git
+  apt: pkg=git state=latest

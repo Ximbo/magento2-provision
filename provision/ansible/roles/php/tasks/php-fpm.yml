@@ -1,0 +1,31 @@
+---
+- name: Set permissions on socket - owner
+  lineinfile: "dest=/etc/php/7.0/fpm/pool.d/www.conf state=present regexp='^;?listen.owner' line='listen.owner = www-data'"
+
+- name: Set permissions on socket - group
+  lineinfile: "dest=/etc/php/7.0/fpm/pool.d/www.conf state=present regexp='^;?listen.group' line='listen.group = www-data'"
+
+- name: Set permissions on socket - mode
+  lineinfile: "dest=/etc/php/7.0/fpm/pool.d/www.conf state=present regexp='^;?listen.mode' line='listen.mode = 0660'"
+
+- name: ensure timezone is set in fpm php.ini
+  lineinfile: dest=/etc/php/7.0/fpm/php.ini
+              regexp='date.timezone ='
+              line='date.timezone = {{ server.timezone }}'
+
+- name: enabling opcache
+  lineinfile: dest=/etc/php/7.0/fpm/php.ini
+              regexp=';?opcache.enable=\d'
+              line='opcache.enable=1'
+
+- name: ensure 'expose_php' is off in php.ini
+  lineinfile: dest=/etc/php/7.0/fpm/php.ini
+              regexp='expose_php ='
+              line='expose_php = Off'
+
+- include: php-xdebug.yml
+  when: "{{ php_xdebug }}"
+
+- name: Add fpm config
+  template: src=default.tpl dest=/etc/php/7.0/fpm/pool.d/{{ server_user }}.conf
+  notify: restart php7.0-fpm

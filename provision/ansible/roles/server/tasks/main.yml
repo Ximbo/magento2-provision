@@ -1,0 +1,45 @@
+---
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Upgrade all packages to the lates version
+  apt: upgrade=dist
+
+- name: Install System Packages
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - curl
+    - wget
+    - python-software-properties
+
+- name: Install Extra Packages
+  apt: pkg={{ item }} state=latest
+  with_items: "{{ server.packages }}"
+  when: server.packages is defined
+
+- name: Configure the timezone
+  template: src=timezone.tpl dest=/etc/timezone
+
+- name: More Configure the timezone
+  file: src=/usr/share/zoneinfo/{{ server.timezone }} dest=/etc/localtime state=link force=yes backup=yes
+
+- name: Generate default system language pack
+  shell: locale-gen {{ server.locale }}
+
+- name: Set default system language
+  shell: update-locale LANG={{ server.locale }}
+
+- name: Create /var/www directory if not existst
+  file: path=/var/www state=directory mode=0755 owner=root group=root
+
+- name: Create user if not exsists
+  user: name={{ server_user }} home={{ server.home }} shell=/bin/bash
+  when: not server.dev
+
+- name: Create directories
+  file: path={{ item }} state=directory mode=0755 owner={{ server_user }} group={{ server_user }}
+  with_items:
+    - "{{ server.home }}"
+    - "{{ server.home }}/data"
+    - "{{ server.home }}/logs"
+    - "{{ server.home }}/tmp"

@@ -1,0 +1,3 @@
+---
+- name: Install Unison
+  apt: pkg=unison state=latest

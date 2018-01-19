@@ -1,0 +1,18 @@
+---
+- name: Add Nodejs key
+  shell: "curl --silent --location https://deb.nodesource.com/setup_6.x | bash -"
+
+- name: Update apt
+  apt: update_cache=yes
+
+- name: Install Nodejs
+  apt: pkg=nodejs state=latest
+
+- name: Install Gulp globally
+  shell: "/usr/bin/npm install -g gulp"
+
+- name: Install Bower globally
+  shell: "/usr/bin/npm install -g bower"
+
+- name: Install Grunt globally
+  shell: "/usr/bin/npm install -g grunt"

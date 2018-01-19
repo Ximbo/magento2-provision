@@ -1,0 +1,30 @@
+---
+- name: ensure timezone is set in cli php.ini
+  lineinfile: dest=/etc/php/7.0/cli/php.ini
+              regexp='date.timezone ='
+              line='date.timezone = {{ server.timezone }}'
+
+- name: enabling opcache cli
+  lineinfile: dest=/etc/php/7.0/cli/php.ini
+              regexp=';?opcache.enable_cli=\d'
+              line='opcache.enable_cli=1'
+
+- name: ensure 'expose_php' is off in cli php.ini
+  lineinfile: dest=/etc/php/7.0/cli/php.ini
+              regexp='expose_php ='
+              line='expose_php = Off'
+
+- name: set error_reporting
+  lineinfile: dest=/etc/php/7.0/cli/php.ini
+              regexp='error_reporting ='
+              line='error_reporting = E_ALL'
+
+- name: set display_errors
+  lineinfile: dest=/etc/php/7.0/cli/php.ini
+              regexp='display_errors ='
+              line='display_errors = On'
+
+- name: set memory_limit
+  lineinfile: dest=/etc/php/7.0/cli/php.ini
+              regexp='memory_limit ='
+              line='memory_limit = 512M'

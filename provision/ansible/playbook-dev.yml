@@ -1,0 +1,27 @@
+---
+- hosts: dev
+  gather_facts: no
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  vars_files:
+    - vars/dev.yml
+    - vars/common.yml
+  pre_tasks:
+    - name: Install python2.7 since Ubuntu 16.04 doesn't ship it
+      raw: bash -c "test -e /usr/bin/python || apt install -y python-minimal"
+    - name: Install pip
+      apt:
+        name: python-pip
+        state: present
+  roles:
+    - server
+    - git
+    - nodejs
+    - nginx
+    - php
+    - mysql
+    - redis
+    - beanstalkd
+    - unison
+    - app

@@ -1,0 +1,19 @@
+---
+- name: set xdebug.remote_enable
+  lineinfile: dest=/etc/php/7.0/fpm/conf.d/20-xdebug.ini
+              line='xdebug.remote_enable = 1'
+
+- name: set xdebug.remote_connect_back
+  lineinfile: dest=/etc/php/7.0/fpm/conf.d/20-xdebug.ini
+              line='xdebug.remote_connect_back = 1'
+
+- name: set xdebug.remote_port
+  lineinfile: dest=/etc/php/7.0/fpm/conf.d/20-xdebug.ini
+              line='xdebug.remote_port = 9000'
+
+- name: set xdebug.max_nesting_level
+  lineinfile: dest=/etc/php/7.0/fpm/conf.d/20-xdebug.ini
+              line='xdebug.max_nesting_level = 512'
+
+- name: disable XDebug on cli
+  command: phpdismod -s cli xdebug

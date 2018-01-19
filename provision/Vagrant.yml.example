@@ -1,0 +1,6 @@
+---
+host: 'magento.test'
+ip: '192.168.10.101'
+cpus: 2
+memory: 1024
+synced_type: nfs

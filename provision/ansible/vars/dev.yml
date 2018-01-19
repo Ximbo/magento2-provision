@@ -1,0 +1,9 @@
+---
+server_dev: true
+server_user: vagrant
+server_name: "{{ vagrant.host }}"
+server_home: "/var/www/vagrant"
+mysql_root_password: root
+mysql_user: magento
+mysql_password: magento
+php_xdebug: "0"

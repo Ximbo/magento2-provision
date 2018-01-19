@@ -1,0 +1,9 @@
+---
+# application tasks to be customized and to run after the main provision
+
+# - name: Install composer vendors dependencies
+#   composer: command=install working_dir=/vagrant
+
+# - name: app | MySQL - Import dump
+#   mysql_db: name={{ mysql.database }} state=import login_user=root login_password={{ mysql.root_password }} target=/vagrant/{{ mysql.dump }}
+#   when: mysql.dump
