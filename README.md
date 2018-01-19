@@ -3,7 +3,7 @@
 ## Окружение:
 1. Virtualbox
 2. Vagrant
-3. Ansibles
+3. Ansible
 4. Unison
 5. Composer
 
