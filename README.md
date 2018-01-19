@@ -4,7 +4,8 @@
 1. Virtualbox
 2. Vagrant
 3. Ansibles
-4. Composer
+4. Unison
+5. Composer
 
 ## Провижинг
 1. В директории **provision** выполнить **cp Vagrant.yml.example Vagrant.yml**
